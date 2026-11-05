@@ -53,57 +53,6 @@ print(QUOTE[:L] + "su" + QUOTE[48:M:2] + QUOTE[-6::N])
 
 print("abc")
 # Aufgabe 3
-"""Aufgabe 3 (1 Punkt)
-Sie haben in der Vorlesung Strings und die Methoden dieses Datentyps kennengelernt. Wir wollen
-dieses Wissen benutzen, um in den folgenden Aufgaben eine erste rudimentäre Korpusanalyse
-durchzuführen.
-Die Variable CORPUS_TEXT enthält unseren zu analysierenden Beispieltext. Sie finden in der Vorlage
-bereits mehrere Beispiele und können auch die Beispiele aus der Aufgabenstellung oder Ihre eigenen
-Beispiele zum Testen verwenden. Wichtig ist nur, dass Ihr Code allgemein formuliert ist und am
-Ende mit allen diesen Texten funktioniert und die richtigen Ergebnisse produziert.
-Wir verwenden für die Aufgaben vereinfachte Definitionen. Zunächst wollen wir herausfinden, wie
-viele Sätze das Korpus enthält.
-Definition: Ein Satz ist ein String, der mit dem Punktzeichen . endet. Sie können davon ausgehen,
-dass keine anderen Satzzeichen, wie ! oder ? , ein Satzende markieren. Ihr Code muss also nur
-Punkte unterstützen. Gleichzeitig können Sie andererseits annehmen, dass alle Punkte im Text auch
-Satzende sind, und nicht beispielsweise Dezimal- oder Tausendertrennzeichen.
-Als ersten Schritt soll CORPUS_TEXT in seine Sätze aufgeteilt und das Ergebnis in einer Liste
-SENTENCES gespeichert werden. Jedes der Elemente der Variable SENTENCES enthält dann einen
-der Sätze, also entspricht die Anzahl der Elemente in SENTENCES genau der Anzahl der Sätze im
-Korpus. Diese Zahl soll dann in SENTENCES_COUNT gespeichert werden.
-Es gibt mehrere korrekte Varianten für SENTENCES , denn zwischen den Sätzen befindet sich ein
-Punkt und ein Leerzeichen. Je nachdem, was man genau noch als Bestandteil eines Satzes definiert,
-erhält man unterschiedliche Ergebnisse für die Elemente in SENTENCES . Das spielt für diese Aufgabe
-allerdings keine Rolle, denn für die gesuchte Anzahl der Sätze ist diese Information irrelevant.
-Beispiel:
->>> CORPUS_TEXT
-'I have no quarrel with you, good Sir Knight. But I must cross this bridge.'
-Mögliche Lösungen für SENTENCES :
->>> SENTENCES
-['I have no quarrel with you, good Sir Knight', 'But I must cross this bridge.']
-Oder:
->>> SENTENCES
-['I have no quarrel with you, good Sir Knight', 'But I must cross this bridge']
-Oder:
->>> SENTENCES
-['I have no quarrel with you, good Sir Knight.', 'But I must cross this bridge.']
-↪→
-4
-Alle diese Lösungen liefern das korrekt Endergebnis für SENTENCES_COUNT :
->>> SENTENCES_COUNT
-2
-Tipp: Zum Trennen eines Strings ( CORPUS_TEXT ) in eine Liste mehrerer Substrings ( SENTENCES )
-gibt es eine passende String-Methode und zum Zählen der Elemente einer Liste (für
-SENTENCES_COUNT ) gibt es eine passende Built-in-Funktion. Ganz allgemein werden sich die
-Methoden von Variablen vom Typ String für die folgenden Aufgaben als äußerst nützlich erweisen.
-Es lohnt sich also, alle einfach mal anzuschauen, um einen Überblick zu bekommen.
-Außerdem kann es sinnvoll sein, mehrere print -Befehle zum “Debugging” einzubauen, also die
-Werte der verwendeten Variablen in Zwischenschritten anzuschauen. Sie können dann diese Ausgabe
-Ihres Codes damit vergleichen, was Sie “manuell” durch Untersuchen des jeweiligen CORPUS_TEXT
-(durch Zählen der Sätze) als Lösung erwarten würden.
-Häufiger Fehler: Bedenken Sie, dass auch der letzte Satz mit einem Punkt endet und was das eventuell
-für den letzten Eintrag in Ihrer Liste bedeutet, wenn Sie str.split verwenden. Sie sollten sich im
-Zweifel Ihr Zwischenergebnis mit print(SENTENCES) anschauen."""
 
 CORPUS_TEXT = (
     "Listen. Strange women lying in ponds distributing swords is no "
@@ -148,30 +97,29 @@ print("bhjbjh")
 
 # Aufgabe 4
 
-CORPUS_CLEANED = CORPUS_TEXT
-TOKENS = None
-TOKENS_COUNT = None
+CORPUS_CLEANED = CORPUS_TEXT.replace(".", "").replace(":", "").replace(",", "")
 
+TOKENS = CORPUS_CLEANED.split()
+TOKENS_COUNT = len(TOKENS)
 
 # Aufgabe 5
 
-TYPES = None
-TYPES_COUNT = None
+TYPES = set(TOKENS)
+TYPES_COUNT = len(TYPES)
 
 
 # Aufgabe 6
 
-LONGEST_TYPE = None
-
+LONGEST_TYPE = max(TYPES, key=len)
 
 # Aufgabe 7
 
 LONGEST_TYPE_PROPERTIES = {}
-LONGEST_TYPE_PROPERTIES["letters_converted_to_capitals"] = None
-LONGEST_TYPE_PROPERTIES["contains_only_letters"] = None
-LONGEST_TYPE_PROPERTIES["all_letters_are_lowercase"] = None
-LONGEST_TYPE_PROPERTIES["how_many_letter_e"] = None
-LONGEST_TYPE_PROPERTIES["index_of_first_letter_e"] = None
+LONGEST_TYPE_PROPERTIES["letters_converted_to_capitals"] = LONGEST_TYPE.upper()
+LONGEST_TYPE_PROPERTIES["contains_only_letters"] = LONGEST_TYPE.isalpha()
+LONGEST_TYPE_PROPERTIES["all_letters_are_lowercase"] = LONGEST_TYPE.islower()
+LONGEST_TYPE_PROPERTIES["how_many_letter_e"] = LONGEST_TYPE.count("e")
+LONGEST_TYPE_PROPERTIES["index_of_first_letter_e"] = LONGEST_TYPE.find("e")
 
 # Oder direkt so:
 # LONGEST_TYPE_PROPERTIES = {
@@ -185,9 +133,9 @@ LONGEST_TYPE_PROPERTIES["index_of_first_letter_e"] = None
 
 # Zusatzaufgabe 8
 
-# Antwort:
+# Antwort: In Python beginnt die Indizierung bei 0 und nicht bei 1.
 
 
 # Zusatzaufgabe 9
 
-# Antwort:
+# Antwort: Ein Tuple ist in Python unveränderlich (immutable).

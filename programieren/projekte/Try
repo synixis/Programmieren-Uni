@@ -1,0 +1,464 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Dies ist ein (sehr) kleines Textadventure. Es verwendet nur Konzepte,
+die bis zur siebten Vorlesung der Programmierung 1 (Python) behandelt
+wurden.
+
+In diesem Spiel kommen alle wichtigen Kontrollstrukturen vor:
+- if / elif / else (auch verschachtelt)
+- match / case fÃ¼r Kommandos und Antworten
+- while (kopfgesteuerte Schleife), while True mit break und while ... else
+- for (ZÃ¤hlschleife, Iteration Ã¼ber dict.items() und for ... else)
+- break und continue
+- verschachtelte Schleifen (while in for)
+
+Die Kommentare im Code zeigen jeweils, welche Kontrollstruktur gerade
+benutzt wird. Viel SpaÃŸ beim Ring-in-den-Berg-Werfen!
+
+License: https://unlicense.org/
+"""
+
+# 1. Setup
+# ----------------------------------------------------------------------------
+
+CHAR_M = frozenset(["Zwerg", "Elb", "Zauberer"])
+CHAR_F = frozenset(["Zwergin", "Elbin", "Zauberin"])
+
+SETUP_TEXT = {
+    "game": "Willkommen im Spiel 'Bring den Ring zum Berg!'\n\n",
+    "name": "Wie ist dein Name? ",
+    "gender": "Bist Du mÃ¤nnlich, weiblich oder nichts von dem? [m/w/n] ",
+    "character_m": "WÃ¤hle einen Character aus: [Zwerg/Elb/Zauberer] ",
+    "character_f": "WÃ¤hle einen Character aus: [Zwergin/Elbin/Zauberin] "
+}
+
+print(SETUP_TEXT["game"])
+
+# while True + break: wiederhole, bis ein nicht-leerer Name eingegeben wurde.
+while True:
+    NAME = input(SETUP_TEXT["name"]).strip()
+    if NAME != "":
+        break
+    print("Ein namenloser Held? Das gibt nur Ã„rger. Bitte noch einmal.")
+
+# while ... else: Nach drei ungÃ¼ltigen Eingaben lÃ¤uft die Schleife ohne
+# break zu Ende, und der else-Block setzt das Geschlecht auf "n".
+VERSUCHE = 3
+while VERSUCHE > 0:
+    GENDER = input(SETUP_TEXT["gender"]).lower().strip()
+
+    if GENDER in ("m", "w", "n"):
+        break
+
+    VERSUCHE -= 1
+    if GENDER == "":
+        print("Schweigen ist auch keine Antwort. Das zÃ¤hlt als Versuch.")
+        continue
+
+    print(f"Bitte wÃ¤hle m, w oder n aus. Deine Angabe war: {GENDER}.")
+else:
+    print("Drei Versuche, keine Entscheidung. Dann eben nichts von dem: "
+          "Du wirst Hobbit.")
+    GENDER = "n"
+
+# if / elif / else: je nach Geschlecht wird eine andere Character-Liste benutzt.
+# Die for ... else-Schleife gibt jeweils drei Versuche. break beendet die
+# Schleife bei einer gÃ¼ltigen Eingabe; sonst greift der else-Block.
+if GENDER == "m":
+    for versuch in range(1, 4):
+        CHARACTER = input(SETUP_TEXT["character_m"]).strip()
+        if CHARACTER in CHAR_M:
+            break
+        print(f"Versuch {versuch}: Da hat etwas nicht gestimmt. "
+              f"Deine Angabe war: {CHARACTER}.")
+    else:
+        print("Drei Versuche, kein Character. Dann eben Hobbit!")
+        CHARACTER = "Hobbit"
+elif GENDER == "w":
+    for versuch in range(1, 4):
+        CHARACTER = input(SETUP_TEXT["character_f"]).strip()
+        if CHARACTER in CHAR_F:
+            break
+        print(f"Versuch {versuch}: Da hat etwas nicht gestimmt. "
+              f"Deine Angabe war: {CHARACTER}.")
+    else:
+        print("Drei Versuche, kein Character. Dann eben Hobbit!")
+        CHARACTER = "Hobbit"
+else:
+    CHARACTER = "Hobbit"
+
+PLURAL_CHARACTER = {
+    "Zwerg": "Zwerge",
+    "Zwergin": "Zwerginnen",
+    "Elb": "Elben",
+    "Elbin": "Elbinnen",
+    "Zauberer": "Zauberer",
+    "Zauberin": "Zauberinnen",
+    "Hobbit": "Hobbits"
+}[CHARACTER]
+
+PLURAL_CHARACTER_DATIV = {
+    "Zwerg": "Zwergen",
+    "Zwergin": "Zwerginnen",
+    "Elb": "Elben",
+    "Elbin": "Elbinnen",
+    "Zauberer": "Zauberern",
+    "Zauberin": "Zauberinnen",
+    "Hobbit": "Hobbits"
+}[CHARACTER]
+
+# 2. First challenge
+# ----------------------------------------------------------------------------
+
+CHOICES_1 = {
+    1: "Gehe zum kleinen Gegenstand und nimm ihn einfach mit. SchlieÃŸlich "
+       "kriegt man nicht alle Tage einfach so was geschenkt!",
+    2: "Lass den Gegenstand einfach liegen. Ist doch egal, was das ist!"
+}
+
+CHALLENGE_1 = {
+    "intro": f"Du befindest dich gerade auf einer Wanderung in deine Heimat. "
+             f"PlÃ¶tzlich fliegt ein Adler Ã¼ber deinen Kopf hinweg und lÃ¤sst "
+             f"einen kleinen, runden Gegenstand fallen. Du glaubst, dass der "
+             f"Ring deinen Namen flÃ¼stert \"Komm zu mir, {NAME}...\"",
+    "choice_1": f"Du siehst, dass es ein Ring ist und steckst ihn an deinen "
+                f"Finger. Als {CHARACTER} dachtest du wohl, dass du es dir "
+                f"einfach erlauben kannst.\n\nAlles verdÃ¼stert sich um dich "
+                f"herum. Du nimmst den Ring wieder ab, aber bist plÃ¶tzlich "
+                f"vor einem gigantischen lava-spuckenden Berg.",
+    "choice_2": f"Genau! {PLURAL_CHARACTER} nehmen nichts mit, was nicht "
+                f"ihnen gehÃ¶rt.\n\nDu lebst noch einige Jahre ein "
+                f"wundervolles und erfÃ¼lltes Leben. Dann kommen allerdings "
+                f"ein paar wunderliche Gestalten in dein Dorf. Du spÃ¼rst, "
+                f"dass die schÃ¶nen Tage fÃ¼r {PLURAL_CHARACTER} vorbei sind."
+}
+
+# 3. Second challenge
+# ----------------------------------------------------------------------------
+
+CHOICES_2 = {
+    1: "Wandere den Schlangenpfad hinauf und wirf den Ring in die Lava.",
+    2: "Zieh den Ring erneut auf.",
+    3: "Warte ab und schaue, was passiert."
+}
+
+CHALLENGE_2 = {
+    "intro": f"Der Berg vor deinen Augen ist den {PLURAL_CHARACTER_DATIV} "
+             f"wohlbekannt. Du kennst ihn auch unter dem Namen \"Die Python"
+             f"\". Er heiÃŸt so, weil ein schlangenÃ¤hnlicher Pfad nach oben "
+             f"steigt.",
+    "choice_1": f"Gute Idee! Leider sind {PLURAL_CHARACTER} aber auch fÃ¼r "
+                f"ihre Tollpatschigkeit bekannt. Du stolperst dabei und "
+                f"fÃ¤llst ebenso in die Lava. SpÃ¤ter stellt sich heraus, dass"
+                f" der Ring aber grauenhaftes Unheil Ã¼ber die Welt gebracht "
+                f"hÃ¤tte. Du erlebst das zwar nicht mehr, aber es wird in "
+                f"deiner Heimat eine groÃŸe Teilnehmer:innen-Urkunde "
+                f"ausgedruckt, mit dem schÃ¶nen Titel \"{CHARACTER} {NAME} hat"
+                f" mit Erfolg den Ring in die Lava geworfen.\"",
+    "choice_2": "Klar, was soll schon passieren? Der Ring hat dich zwar in "
+                "eine finstere Gegend verschlagen, aber was soll schon "
+                "schiefgehen (zum zweiten Mal)?\n\n...Der Ring verwandelt "
+                "dich in eine riesige Schlange, die nichts anderes mehr "
+                "machen kann als Fremdcode zu interpretieren. So ein "
+                "Schicksal wÃ¼nscht man sich wirklich niemandem... :/",
+    "choice_3": "Abwarten? Wirklich? Na gut...\n\nDeine Anwesenheit wird "
+                "schnell bemerkt. Du wirst gefangen genommen und dein "
+                "Leben endet nach vielen Jahren in einem unbekannten, "
+                "dunklen Verlies ohne Netflix oder gutem Handy-Empfang. "
+                "Das ganze Land wird zudem von dunklen MÃ¤chten erobert. "
+                "Selbst wenn Du es schaffen wÃ¼rdest, zu entkommen. Dich "
+                "erwartet auch eine Verurteilung in deinem Heimatland "
+                "wegen unterlassener Hilfeleistung."
+}
+
+# 4. Third challenge
+# ----------------------------------------------------------------------------
+
+CHALLENGE_3 = {
+    "intro": "\nDer Schlangenpfad windet sich in drei Schlingen um den Berg. "
+             "An jeder Schlinge entscheidest du, was du tust.",
+    "top": "\nEndlich stehst du am Rand des Kraters. Die Lava blubbert "
+           "zufrieden vor sich hin. Du holst den Ring aus der Tasche.",
+    "riddle": "\nDoch da! Ein kleiner Lavasalamander versperrt dir den Weg. "
+              "\"Nur wer mein RÃ¤tsel lÃ¶st, darf den Ring in die Lava werfen!\", "
+              "zischt er.\n\n\"Was windet sich in Schleifen, hat Schuppen "
+              "und verschlingt ganze Programme?\""
+}
+
+PATH_INTRO = {
+    1: "Vor dir steht ein Souvenirstand. Ein Schild verspricht: "
+       "'Ich war auf der Python â€“ jetzt auch als T-Shirt!'",
+    2: "Ein schlafender Bergtroll liegt quer Ã¼ber den Pfad. Sein "
+       "Schnarchen klingt wie ein fehlerhaftes Python-Skript.",
+    3: "Der Pfad gabelt sich. Links fÃ¼hrt eine dunkle AbkÃ¼rzung durch "
+       "den Fels, rechts windet sich der normale Weg weiter nach oben."
+}
+
+PATH_COMMANDS = {
+    1: "weiter, rasten, shirt kaufen, abkÃ¼rzung",
+    2: "weiter, rasten, lembas geben, abkÃ¼rzung",
+    3: "weiter, rasten, abkÃ¼rzung"
+}
+
+PATH_EVENTS = {
+    1: "Du gehst am Souvenirstand vorbei. Der VerkÃ¤ufer ruft dir "
+       "hinterher: 'Nur 9,99! Ein echter Python-Klassiker!' Du widerstehst.",
+    2: "Du schleichst auf Zehenspitzen am Troll vorbei. Er murmelt im "
+       "Schlaf: 'Nur Ã¼ber meine Leiche... oder mit Lembas.'",
+    3: "Du bleibst auf dem Pfad. Die letzte Kehre ist steil, aber du "
+       "schaffst sie."
+}
+
+PATH_REST = {
+    1: "Du rastest auf der Bank neben dem Souvenirstand. Der VerkÃ¤ufer "
+       "versucht dir ein Shirt anzudrehen. Du lehnst hÃ¶flich ab.",
+    2: "Du machst ein Nickerchen neben dem Troll. Er schnarcht im Takt. "
+       "Danach fÃ¼hlst du dich erholt.",
+    3: "Du rastest kurz vor dem Gipfel. Die Lava blubbert ungeduldig. "
+       "Danach geht es weiter."
+}
+
+PATH_SHORTCUT = "Du nimmst eine AbkÃ¼rzung durch einen schmalen Spalt im " \
+                "Fels. Es ist dunkel, es riecht nach BergkÃ¤se, aber du " \
+                "sparst dir diese Schlinge und kommst schneller voran."
+
+# Game flow
+# ----------------------------------------------------------------------------
+
+print(CHALLENGE_1["intro"])
+
+# for-Schleife Ã¼ber dict.items(): mehrere Iterationsvariablen (number, choice).
+for number, choice in CHOICES_1.items():
+    print(f"{number}: {choice}")
+
+# match/case: Verzweigung nach der ersten Entscheidung.
+CHOICE_1 = input(f"\nWas tust Du? {list(CHOICES_1.keys())} ").strip()
+
+match CHOICE_1:
+    case "1":
+        print(CHALLENGE_1["choice_1"])
+
+        print(CHALLENGE_2["intro"])
+
+        # Noch eine for-Schleife Ã¼ber dict.items().
+        for number, choice in CHOICES_2.items():
+            print(f"{number}: {choice}")
+
+        CHOICE_2 = input(f"\nWas tust Du? {list(CHOICES_2.keys())} ").strip()
+
+        # match/case fÃ¼r die zweite Entscheidung.
+        match CHOICE_2:
+            case "1":
+                # 4. Third challenge: interaktiver Aufstieg
+                # ----------------------------------------------------
+                print(CHALLENGE_3["intro"])
+
+                SHIRT = False
+                LEMBAS = False
+                ABKUERZUNGEN = 0
+                ERLEBNISSE = 0
+
+                for schlinge in range(1, 4):
+                    print(f"\nSchlinge {schlinge} der Python:")
+                    print(PATH_INTRO[schlinge])
+                    print(f"Kommandos: {PATH_COMMANDS[schlinge]}")
+
+                    RASTE = False
+                    ABKUERZUNG = False
+
+                    # while True + break: wiederhole die Eingabe, bis ein
+                    # gÃ¼ltiges Kommando eingegeben wurde.
+                    while True:
+                        KOMMANDO = input("Dein Kommando? ").lower().split()
+
+                        # match/case mit Listenmustern: Das Kommando wird
+                        # in WÃ¶rter zerlegt und strukturell verglichen.
+                        match KOMMANDO:
+                            case ["weiter"] | ["gehe"] | ["geh"]:
+                                if schlinge == 2 and SHIRT:
+                                    print("Der Troll wacht auf, sieht dein "
+                                          "Python-Shirt und sagt: 'Ein "
+                                          "Kollege! Geh nur durch.'")
+                                else:
+                                    print(PATH_EVENTS[schlinge])
+                                ERLEBNISSE += 1
+                                break
+                            case ["rasten"] | ["raste"] | ["pause"]:
+                                print(PATH_REST[schlinge])
+                                RASTE = True
+                                break
+                            case ["shirt", "kaufen"] | ["kaufen"]:
+                                if schlinge == 1:
+                                    print("Du kaufst das Shirt. Es ist eine "
+                                          "Nummer zu klein, aber du fÃ¼hlst "
+                                          "dich wie ein Python-Profi.")
+                                    SHIRT = True
+                                    ERLEBNISSE += 1
+                                    break
+                                print("Hier gibt es keinen Souvenirstand.")
+                            case (["lembas", "geben"] | ["fÃ¼ttern"]
+                                  | ["fuettern"]):
+                                if schlinge == 2:
+                                    print("Du bietest dem Troll ein "
+                                          "Lembas-Brot an. Er schnappt es "
+                                          "sich, murmelt 'Danke, Chef' und "
+                                          "rollt zur Seite.")
+                                    LEMBAS = True
+                                    ERLEBNISSE += 1
+                                    break
+                                print("Der Troll ist hier nicht. Du "
+                                      "fÃ¼tterst einen Stein.")
+                            case (["abkÃ¼rzung"] | ["abkuerzung"]
+                                  | ["hÃ¶hle"] | ["hoehle"]):
+                                print(PATH_SHORTCUT)
+                                ABKUERZUNG = True
+                                ABKUERZUNGEN += 1
+                                break
+                            case _:
+                                print("Unbekanntes Kommando. Versuch es mit "
+                                      f"{PATH_COMMANDS[schlinge]}.")
+
+                    # Eine AbkÃ¼rzung Ã¼berspringt nur die aktuelle Schlinge.
+                    # continue springt zur nÃ¤chsten Runde der Ã¤uÃŸeren
+                    # for-Schleife; so sind alle drei AbkÃ¼rzungen mÃ¶glich.
+                    if ABKUERZUNG:
+                        continue
+                    if RASTE:
+                        continue
+                else:
+                    # for ... else: lÃ¤uft nach dem regulÃ¤ren Ende der
+                    # Schleife. Eine AbkÃ¼rzung beendet nur die aktuelle
+                    # Schlinge, nicht den ganzen Aufstieg.
+                    if ABKUERZUNGEN == 0:
+                        print("\nDu hast alle drei Schlingen ohne AbkÃ¼rzung "
+                              "geschafft. Respekt!")
+                    else:
+                        print(f"\nDu hast {ABKUERZUNGEN} von 3 Schlingen "
+                              f"abgekÃ¼rzt. Der Berg hat es bemerkt.")
+
+                print(CHALLENGE_3["top"])
+
+                # while ... else: Der else-Block lÃ¤uft nur, wenn die
+                # Schleife nicht per break verlassen wurde.
+                print(CHALLENGE_3["riddle"])
+
+                VERSUCHE = 3
+                while VERSUCHE > 0:
+                    ANTWORT = input("\nDeine Antwort: ").lower().strip()
+
+                    # match/case fÃ¼r die Antworten auf das RÃ¤tsel.
+                    match ANTWORT:
+                        case "python" | "schlange" | "schlangenpfad":
+                            print("Der Salamander nickt: \"Genau. Und jetzt "
+                                  "wirf den Ring endlich rein!\"")
+                            break
+                        case "":
+                            print("Der Salamander wartet. Und wartet. Das "
+                                  "zÃ¤hlt als Versuch.")
+                        case "java":
+                            print("Der Salamander zischt: \"Falsche "
+                                  "Sprache!\"")
+                        case _:
+                            print("Der Salamander schÃ¼ttelt den Kopf.")
+
+                    VERSUCHE -= 1
+                    if VERSUCHE == 1:
+                        print("Noch 1 Versuch.")
+                    elif VERSUCHE > 1:
+                        print(f"Noch {VERSUCHE} Versuche.")
+                else:
+                    print("Der Salamander seufzt: \"Dann eben Java.\"")
+
+                RAETSEL_GELOEST = VERSUCHE > 0
+
+                # Je nach Aufstieg und RÃ¤tsel gibt es ein anderes Ende.
+                if not RAETSEL_GELOEST:
+                    if ABKUERZUNGEN == 3:
+                        print("Der Salamander mustert dich: kein Shirt, kein "
+                              "Lembas, dafÃ¼r drei AbkÃ¼rzungen. 'Du bist den "
+                              "Berg nicht hinaufgestiegen, du hast ihn "
+                              "umgangen', zischt er. 'Und das RÃ¤tsel auch "
+                              "noch falsch. Ab in die Java-HÃ¶hle!' Dort "
+                              "schreibst du fÃ¼r immer Getter und Setter. "
+                              "Dein einziger Trost: Der Kaffeeautomat hat "
+                              "einen Python-Aufkleber, den du heimlich "
+                              "abkratzt.")
+                    elif ABKUERZUNGEN > 0:
+                        print(f"Du hast {ABKUERZUNGEN} von 3 Schlingen "
+                              f"abgekÃ¼rzt und das RÃ¤tsel trotzdem nicht "
+                              f"gelÃ¶st. Der Salamander seufzt: 'Halb "
+                              f"abgekÃ¼rzt, halb geraten â€“ das ist ungefÃ¤hr "
+                              f"so effizient wie ein while True ohne break.' "
+                              f"Du landest in der Java-HÃ¶hle. Immerhin "
+                              f"darfst du dort {ABKUERZUNGEN} Mal am Tag "
+                              f"eine AbkÃ¼rzung zum Kaffeeautomaten nehmen.")
+                    else:
+                        print("Du hast ehrlich alle drei Schlingen "
+                              "erklommen, aber das RÃ¤tsel nicht geknackt. "
+                              "Der Salamander ist sichtlich beeindruckt: "
+                              "'So viel Ausdauer und dann Java.' Du wirst "
+                              "in die dunkle HÃ¶hle gebracht, in der du fÃ¼r "
+                              "immer Getter und Setter schreibst. Deine "
+                              "Beine tun weh, dein Python-Herz auch.")
+                elif ABKUERZUNGEN > 0:
+                    print(f"Du hast den Ring in die Lava geworfen â€“ und "
+                          f"{ABKUERZUNGEN} von 3 Schlingen einfach "
+                          f"Ã¼bersprungen. Der Berg rumort: 'Das zÃ¤hlt "
+                          f"nicht als Besteigung, das war eher ein "
+                          f"Schleifen-Durchlauf mit continue.' Immerhin: "
+                          f"Der Ring ist weg, die Welt ist gerettet, und "
+                          f"du bekommst eine Urkunde mit dem Titel "
+                          f"'{CHARACTER} {NAME} hat die Python erfolgreich "
+                          f"umgangen.' Der Lavasalamander signiert sie mit "
+                          f"'while True: stolz'.")
+                elif SHIRT and LEMBAS and ERLEBNISSE == 3:
+                    print("Du hast alle drei Schlingen erklommen, ein "
+                          "Python-Shirt erbeutet, den Troll mit Lembas "
+                          "bestochen und das RÃ¤tsel gelÃ¶st. Der Ring landet "
+                          "in der Lava, die Welt ist gerettet, und der "
+                          "Lavasalamander verneigt sich: 'Du bist der "
+                          "erste Gast, der den Berg sowohl bestiegen als "
+                          "auch verstanden hat.' Du bekommst eine Urkunde, "
+                          "ein Gruppenfoto mit dem Troll und lebenslang "
+                          "freien Eintritt am Souvenirstand. Dein Shirt "
+                          "trÃ¤gt jetzt den Aufdruck: 'Ich war auf der "
+                          "Python â€“ und habe alle Schlingen mitgenommen.'")
+                else:
+                    print("Du hast alle drei Schlingen ohne AbkÃ¼rzung "
+                          "geschafft und das RÃ¤tsel gelÃ¶st. Der Ring landet "
+                          "in der Lava, die Welt ist gerettet. Aber so ganz "
+                          "komplett bist du nicht:")
+                    if not SHIRT:
+                        print("Der Souvenirstand ruft: 'Ohne Shirt keine "
+                              "Erinnerung!'")
+                    if not LEMBAS:
+                        print("Der Troll murmelt: 'Ohne Lembas keine "
+                              "Freundschaft.'")
+                    if ERLEBNISSE < 3:
+                        print("Und irgendwo hast du eine Schlinge verpasst. "
+                              "Der Berg nennt dich hinter vorgehaltener "
+                              "Hand 'den mit der LÃ¼cke'.")
+                    print("Du bist ein Held, aber ein schlecht "
+                          "ausgestatteter. Immerhin: Deine Urkunde wird "
+                          "auf recyceltem Papier gedruckt.")
+            case "2":
+                print(CHALLENGE_2["choice_2"])
+            case "3":
+                print(CHALLENGE_2["choice_3"])
+            case _:
+                print("Du hast nicht 1, 2 oder 3 eingegeben. Das heiÃŸt wohl, "
+                      "dass du lieber abwarten mÃ¶chtest!\n")
+                print(CHALLENGE_2["choice_3"])
+    case "2":
+        print(CHALLENGE_1["choice_2"])
+    case _:
+        print("Du hast weder 1 noch 2 eingegeben. Clever! Du rufst den "
+              "Adler einfach zurÃ¼ck und sagst ihm, dass er etwas verloren "
+              "hat. Der Adler bedankt sich hÃ¶flich, nimmt den Ring auf, "
+              "fliegt ihn zu einem Berg und lÃ¤sst ihn dort in die Lava "
+              "fallen. Du hast ein sehr erfÃ¼lltes Leben und die ganzen "
+              "Lande leben glÃ¼cklich und zufrieden weiter. Aber mÃ¶chtest "
+              "Du nicht lieber etwas Abenteuer haben? Dann starte einfach "
+              "das Programm neu.")
