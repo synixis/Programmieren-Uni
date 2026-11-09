@@ -46,12 +46,11 @@ J = -59
 K = -1
 print(QUOTE[F:G] + QUOTE[H] + QUOTE[I] + 2 * QUOTE[J] + QUOTE[K])
 
-L = 11
+L = -73
 M = 51
 N = 5
 print(QUOTE[:L] + "su" + QUOTE[48:M:2] + QUOTE[-6::N])
 
-print("abc")
 # Aufgabe 3
 
 CORPUS_TEXT = (
