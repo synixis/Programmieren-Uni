@@ -9,60 +9,49 @@ den einzelnen Aufgaben des Übungsblatts.
 
 """
 
-
 # Aufgabe 1
-
 def print_square():
+    """printet das Quadrat der Ziffer"""
     number = input("Bitte geben Sie eine Zahl ein: ")
     number = int(number)
     number = number ** 2
-    return number
+    print(number)
 
 # Aufgabe 2
-"""ervollständigen Sie die Funktion account_number . Sie hat einen Parameter number mit welchem
-eine Kontonummer als Typ Integer übergeben wird. Die Funktion soll dieser Nummer so viele Nullen
-voranstellen, dass sich insgesamt 9 Ziffern ergeben. Dieses Ergebnis soll als String zurückgegeben
-werden. Sollte number eine negative Zahl sein, weniger als 3 Ziffern oder mehr als 9 Ziffern besitzen,
-dann soll None zurückgegeben werden. (Negative Kontonummern sowie Kontonummern von Länge
-kleiner 3 oder größer 9 werden von dieser Bank nicht vergeben.)"""
 def account_number(number):
-    if number < 999 or number > 1000000:
-        return None
-    else:
-        return f"{number:09d}"
-    # TODO
+    """Formatiert zu 9 ziffern, am anfang mit 0 aufgefüllt"""
+    if 100 <= number <= 999999999:
+        return str(number).zfill(9)
+    return None
 
 # Aufgabe 3
-
 def translate(dictionary, word):
+    """translate a word in the dict."""
     if word in dictionary:
         return dictionary[word]
-    else:
-        return None
+    return None
 
 
 # Aufgabe 4
-"""Vervollständigen Sie die Funktion invert_dict . Sie hat einen Parameter dictionary für ein
-Wörterbuch vom Typ dict . Die Schlüssel-Wert-Paare von dictionary sollen invertiert und
-anschließend als neues Objekt vom Typ dict zurückgegeben werden.
-Ein Aufruf von invert_dict(DE_EN) soll also beispielsweise folgenden Rückgabewert besitzen:
-{"King": "König", "Knight": "Ritter", "Dragon": "Drache", "Aaaarrggh": "Aaaarrggh"}"""
-
 def invert_dict(dictionary):
+    """macht dict inverten"""
     inv_dict = {v: k for k, v in dictionary.items()}
     return inv_dict
 
 
 # Aufgabe 4 Antwort Verständnisfrage:
 # die wete im dict müssen, anders als die keys, nicht unique sein
-#
+#test test
 
 
 # Aufgabe 5
-
 def word_mincer(word, begin_upper=False):
-    pass
+    """bUcHsTaBeN so hoch runter AnOrDnEn, dass sie BbWeChSeLnD groß und klein geschrieben werden. /
+    begin_upper gibt an, ob der erste Buchstabe groß geschrieben werden soll oder nicht."""
+    if begin_upper:
+        return ''.join([c.upper() if i % 2 == 0 else c.lower() for i, c in enumerate(word)])
 
+    return ''.join([c.lower() if i % 2 == 0 else c.upper() for i, c in enumerate(word)])
 
 # Testaufrufe
 
