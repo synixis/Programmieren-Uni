@@ -46,7 +46,8 @@ def invert_dict(dictionary):
 
 # Aufgabe 5
 def word_mincer(word, begin_upper=False):
-    """bUcHsTaBeN So HoCh RuNtEr AnOrDnEn, DaSs sIe aBbWeChSeLnD GROß und klein GeScHrIeBeN wErDeN. /
+    """bUcHsTaBeN So HoCh RuNtEr AnOrDnEn, /
+    DaSs sIe aBbWeChSeLnD GROß und klein GeScHrIeBeN wErDeN. /
     begin_upper gibt an, ob der erste Buchstabe GROß GESCHRIEBEN werden soll oder nicht."""
     if begin_upper:
         return ''.join([c.upper() if i % 2 == 0 else c.lower() for i, c in enumerate(word)])
