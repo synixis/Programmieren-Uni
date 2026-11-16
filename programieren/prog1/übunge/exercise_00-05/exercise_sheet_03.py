@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Vorlage zu Übungsblatt 03
+"""
 
-Dieses Dokument dient Ihnen als Vorlage für Ihre Abgabe zum aktuellen
-Übungsblatt. Sie finden weiter unten mehrere Abschnitte, passend zu
-den einzelnen Aufgaben des Übungsblatts.
+╭──────────────────────────-·-ˋˏ-༻𖤓༺-ˎˊ·-──────────────────────────╮
+                                HALLO ^^
+                   Dieses ist die Abgabe zum aktuellen
+ Übungsblatt03. Sie finden weiter unten mehrere Abschnitte, passend zu
+                  den einzelnen Aufgaben des Übungsblatts.
+                                -Julia
+╰──────────────────────────-·-ˋˏ-༻𖤓༺-ˎˊ·-──────────────────────────╯
 
 """
 
 # Aufgabe 1
 def print_square():
-    """printet das Quadrat der Ziffer"""
+    """printet das Quadrat der Ziffer □️"""
     number = input("Bitte geben Sie eine Zahl ein: ")
     number = int(number)
     number = number ** 2
@@ -19,7 +23,7 @@ def print_square():
 
 # Aufgabe 2
 def account_number(number):
-    """Formatiert zu 9 ziffern, am anfang mit 0 aufgefüllt"""
+    """Formatiert zu 9 Ziffern, am anfang mit 0 aufgefüllt"""
     if 100 <= number <= 999999999:
         return str(number).zfill(9)
     return None
@@ -31,23 +35,19 @@ def translate(dictionary, word):
         return dictionary[word]
     return None
 
-
 # Aufgabe 4
 def invert_dict(dictionary):
     """macht dict inverten"""
     inv_dict = {v: k for k, v in dictionary.items()}
     return inv_dict
 
-
 # Aufgabe 4 Antwort Verständnisfrage:
 # die wete im dict müssen, anders als die keys, nicht unique sein
-#test test
-
 
 # Aufgabe 5
 def word_mincer(word, begin_upper=False):
-    """bUcHsTaBeN so hoch runter AnOrDnEn, dass sie BbWeChSeLnD groß und klein geschrieben werden. /
-    begin_upper gibt an, ob der erste Buchstabe groß geschrieben werden soll oder nicht."""
+    """bUcHsTaBeN So HoCh RuNtEr AnOrDnEn, DaSs sIe aBbWeChSeLnD GROß und klein GeScHrIeBeN wErDeN. /
+    begin_upper gibt an, ob der erste Buchstabe GROß GESCHRIEBEN werden soll oder nicht."""
     if begin_upper:
         return ''.join([c.upper() if i % 2 == 0 else c.lower() for i, c in enumerate(word)])
 
